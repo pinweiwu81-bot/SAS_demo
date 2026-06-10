@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SAS Revenue & Yield Simulator | Pin-Wei Wu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sas-blue: #001b69;
+            --sas-red: #d82b26;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1f2937;
+        }
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 40px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(to right, var(--sas-red) 0%, var(--sas-blue) 100%);
+            border-image-slice: 1;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--sas-blue);
+            font-weight: 900;
+            font-size: 32px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+        h1 span {
+            color: var(--sas-red);
+        }
+        .candidate-tag {
+            text-align: right;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .candidate-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--sas-blue);
+            margin-bottom: 4px;
+        }
+        .candidate-contact {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 600;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .card {
+            background-color: var(--card);
+            padding: 35px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,27,105,0.05);
+            border: 1px solid #e5e7eb;
+        }
+        .card h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--sas-blue);
+            font-size: 18px;
+            margin-top: 0;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #4b5563;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--sas-blue);
+            height: 6px;
+            border-radius: 5px;
+            outline: none;
+        }
+        .value-display {
+            float: right;
+            color: var(--sas-red);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 15px;
+        }
+        .results {
+            background: linear-gradient(135deg, var(--sas-blue) 0%, #001246 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,27,105,0.15);
+        }
+        .results h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 15px 0;
+            color: #9ca3af;
+        }
+        .price-output {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 56px;
+            font-weight: 900;
+            color: white;
+            margin: 0;
+            line-height: 1;
+        }
+        .currency {
+            font-size: 20px;
+            font-weight: 400;
+            color: var(--sas-red);
+        }
+        .actionable-insight {
+            background-color: rgba(255,255,255,0.08);
+            padding: 20px;
+            border-left: 4px solid var(--sas-red);
+            margin-top: 35px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        .actionable-insight strong {
+            font-family: 'Montserrat', sans-serif;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #e5e7eb;
+        }
+        .disclaimer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 11px;
+            color: #9ca3af;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SAS <span>Revenue Insights</span></h1>
+        <div class="candidate-tag">
+            <div class="candidate-name">Candidate Demo: Pin-Wei Wu</div>
+            <div class="candidate-contact">pinweiwu81@gmail.com | +46 79 313 32 94</div>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <div class="card">
+            <h2>Flight Parameters (ARN -> LHR)</h2>
+            
+            <div class="form-group">
+                <label>Days to Departure <span class="value-display" id="val-days">30</span></label>
+                <input type="range" id="days" min="1" max="90" value="30">
+            </div>
+
+            <div class="form-group">
+                <label>Current Seat Load Factor (%) <span class="value-display" id="val-load">65%</span></label>
+                <input type="range" id="load" min="0" max="100" value="65">
+            </div>
+
+            <div class="form-group">
+                <label>Competitor Price Index (100 = Avg) <span class="value-display" id="val-comp">100</span></label>
+                <input type="range" id="comp" min="80" max="130" value="100">
+            </div>
+        </div>
+
+        <div class="results">
+            <h3>Recommended Dynamic Ticket Price</h3>
+            <p class="price-output"><span id="final-price">1,450</span> <span class="currency">SEK</span></p>
+            
+            <div class="actionable-insight">
+                <strong>Actionable Insight</strong>
+                <div id="insight-text">Based on current booking velocity and market rates, maintaining base pricing is recommended. Load factor is pacing normally for a 30-day window.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="disclaimer">
+        *This is a conceptual Vibe-Coded demonstration built by Pin-Wei Wu to showcase data visualization and logical structuring.
+    </div>
+</div>
+
+    <script>
+        const daysSlider = document.getElementById('days');
+        const loadSlider = document.getElementById('load');
+        const compSlider = document.getElementById('comp');
+        
+        const valDays = document.getElementById('val-days');
+        const valLoad = document.getElementById('val-load');
+        const valComp = document.getElementById('val-comp');
+        
+        const finalPrice = document.getElementById('final-price');
+        const insightText = document.getElementById('insight-text');
+
+        const BASE_PRICE = 1000;
+
+        function calculateRevenue() {
+            let days = parseInt(daysSlider.value);
+            let load = parseInt(loadSlider.value);
+            let comp = parseInt(compSlider.value);
+
+            valDays.innerText = days;
+            valLoad.innerText = load + '%';
+            valComp.innerText = comp;
+
+            let price = BASE_PRICE;
+
+            // Days to departure logic (Price goes up as days get closer)
+            if (days < 14) price += (14 - days) * 50;
+            else if (days > 60) price -= 150;
+
+            // Load factor logic (Price goes up if we are heavily booked)
+            if (load > 80) price += 400;
+            else if (load < 40) price -= 200;
+
+            // Competitor logic (Adjust to competitor index)
+            price = price * (comp / 100);
+
+            // Display formatting
+            finalPrice.innerText = Math.round(price).toLocaleString();
+
+            // Generate Actionable Insight
+            let insight = "";
+            if (days < 14 && load < 50) {
+                insight = "WARNING: Low load factor near departure. Recommend launching targeted CRM promotion to clear remaining inventory and optimize ancillary revenue.";
+            } else if (load > 85) {
+                insight = "HIGH DEMAND: Flight is nearing capacity. Recommend yield protection by closing lower booking classes and maximizing margin on remaining seats.";
+            } else if (comp < 90) {
+                insight = "COMPETITOR THREAT: Competitors are undercutting market average. Recommend holding price to protect brand premium, or selectively matching via targeted campaigns.";
+            } else {
+                insight = "OPTIMAL PACE: Booking curve is perfectly aligned with historical targets. Maintain current pricing strategy.";
+            }
+
+            insightText.innerText = insight;
+        }
+
+        daysSlider.addEventListener('input', calculateRevenue);
+        loadSlider.addEventListener('input', calculateRevenue);
+        compSlider.addEventListener('input', calculateRevenue);
+
+        calculateRevenue();
+    </script>
+</body>
+</html>
